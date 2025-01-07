@@ -1,0 +1,211 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: Users
+            columns:
+              - column:
+                  name: user_id
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(60)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(60)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: VARCHAR(50)
+              - column:
+                  name: lastname
+                  type: VARCHAR(50)
+              - column:
+                  name: user_image
+                  type: VARCHAR(255)
+              - column:
+                  name: about
+                  type: VARCHAR(255)
+              - column:
+                  name: country
+                  type: VARCHAR(50)
+              - column:
+                  name: city
+                  type: VARCHAR(50)
+              - column:
+                  name: is_admin
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_create_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create-books-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: Books
+            columns:
+              - column:
+                  name: book_id
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: author
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: cover_image
+                  type: VARCHAR(255)
+              - column:
+                  name: published_date
+                  type: TIMESTAMP
+              - column:
+                  name: book_create_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create-favorites-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: Favorites
+            columns:
+              - column:
+                  name: favorite_id
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: favorited_date
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: Favorites
+            baseColumnNames: user_id
+            referencedTableName: Users
+            referencedColumnNames: user_id
+            onDelete: CASCADE
+            constraintName: fk_favorites_users
+        - addForeignKeyConstraint:
+            baseTableName: Favorites
+            baseColumnNames: book_id
+            referencedTableName: Books
+            referencedColumnNames: book_id
+            onDelete: CASCADE
+            constraintName: fk_favorites_books
+
+  - changeSet:
+      id: create-book-category-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: BookCategory
+            columns:
+              - column:
+                  name: category_id
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: category_create_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create-book-category-map-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: BookCategoryMap
+            columns:
+              - column:
+                  name: book_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: BookCategoryMap
+            columnNames: book_id, category_id
+
+  - changeSet:
+      id: create-user-book-map-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: UserBookMap
+            columns:
+              - column:
+                  name: user_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: UserBookMap
+            columnNames: user_id, book_id
