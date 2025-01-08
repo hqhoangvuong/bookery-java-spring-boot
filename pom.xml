@@ -128,7 +128,7 @@
 				<configuration>
 					<jdbc>
 						<driver>org.postgresql.Driver</driver>
-						<url>jdbc:postgresql://localhost:5432/goods_db</url>
+						<url>jdbc:postgresql://localhost:5432/bookery_db</url>
 						<user>postgres</user>
 						<password>Hoangvuong1024@</password>
 					</jdbc>

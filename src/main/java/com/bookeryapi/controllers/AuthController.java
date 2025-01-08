@@ -27,14 +27,13 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-    
+
     private final UserService userService;
 
     @PostMapping("/login")
     public LoginResponseDto login(@RequestParam String username, @RequestParam String password) {
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(username, password)
-        );
+                new UsernamePasswordAuthenticationToken(username, password));
 
         Object principal = authentication.getPrincipal();
 
@@ -45,12 +44,14 @@ public class AuthController {
         User user = (User) authentication.getPrincipal();
 
         var expiration = jwtUtil.getExpiration();
-        var token = jwtUtil.generateToken(user.getUsername());
+        var token = jwtUtil.generateToken(
+                user.getUsername(),
+                user.getAuthorities());
 
         return new LoginResponseDto(
-            token, 
-            "Bearer", 
-            expiration);
+                token,
+                "Bearer",
+                expiration);
     }
 
     @PostMapping("/register")
@@ -60,4 +61,3 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 }
-

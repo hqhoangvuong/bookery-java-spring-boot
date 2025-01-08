@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -53,14 +54,16 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null) {
-            Object principal = authentication.getPrincipal();
-            
-            // If the principal is an instance of User (the default user type in Spring Security)
-            if (principal instanceof User) {
-                User user = (User) principal;
-                return "Username: " + user.getUsername() + ", Roles: " + user.getAuthorities();
-            }
+            System.out.println("Authentication: " + authentication);
+
+            Object authorities = authentication.getAuthorities();
         }
         return "No user authenticated";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin")
+    public String adminAccess() {
+        return "This is an admin-only endpoint.";
     }
 }
