@@ -128,9 +128,9 @@
 				<configuration>
 					<jdbc>
 						<driver>org.postgresql.Driver</driver>
-						<url>jdbc:postgresql://localhost:5432/bookery_db</url>
-						<user>postgres</user>
-						<password>Hoangvuong1024@</password>
+						<url></url>
+						<user></user>
+						<password></password>
 					</jdbc>
 					<generator>
 						<name>org.jooq.codegen.JavaGenerator</name>
