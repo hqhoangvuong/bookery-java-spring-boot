@@ -1,8 +1,5 @@
 package com.bookeryapi.controllers;
 
-import java.time.Instant;
-
-import org.jooq.bookery.default_.public_.tables.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +28,9 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestParam String username, @RequestParam String password) {
+    public LoginResponseDto login(
+            @RequestParam String username,
+            @RequestParam String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password));
 

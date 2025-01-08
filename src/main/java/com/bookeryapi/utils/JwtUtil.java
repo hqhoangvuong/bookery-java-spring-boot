@@ -43,16 +43,19 @@ public class JwtUtil {
             "q+6FoWXyliga5yEWpqg5N46bhUDCem1pDsN4utvP1Blx5kHkSXBMTcFwsw/WQf5k\n" + //
             "BBVx320+QNTEosEZbcrJ5moH6r7r79YDHKKQJBaau+cdkatbdsSvoKI0LwV64wKV\n" + //
             "Zu2IEMo1LKXqDwPlqx2c230=";
+            
     private final long expiration = 3600000; // 1 hour
 
     public String generateToken(
             String username,
             Collection<GrantedAuthority> authorities) {
-        String roles = authorities.stream()
+        String roles = authorities
+                .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        return Jwts.builder()
+        return Jwts
+                .builder()
                 .setSubject(username)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
@@ -62,7 +65,8 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
+        return Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey.getBytes())
                 .build()
                 .parseClaimsJws(token)
@@ -71,7 +75,8 @@ public class JwtUtil {
     }
 
     public List<GrantedAuthority> getAuthoritiesFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = Jwts
+                .parserBuilder()
                 .setSigningKey(secretKey.getBytes())
                 .build()
                 .parseClaimsJws(token)
@@ -79,14 +84,16 @@ public class JwtUtil {
 
         String roles = claims.get("roles", String.class);
 
-        return Arrays.stream(roles.split(","))
+        return Arrays
+                .stream(roles.split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
+            Jwts
+                    .parserBuilder()
                     .setSigningKey(secretKey.getBytes())
                     .build()
                     .parseClaimsJws(token);

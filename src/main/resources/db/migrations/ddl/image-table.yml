@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-images-table
+      author: vuongqhhuynh
+      changes:
+        - createTable:
+            tableName: images
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lo_id
+                  type: OID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: type
+                  type: INT
+                  constraints:
+                    nullable: false

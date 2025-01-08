@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: vuongqhhuynh
+      changes:
+        - addColumn:
+            tableName: Users
+            columns:
+              - column:
+                  name: avatarImageId
+                  type: INT
+      rollback:
+        - dropColumn:
+            tableName: Users
+            columnName: avatarImageId

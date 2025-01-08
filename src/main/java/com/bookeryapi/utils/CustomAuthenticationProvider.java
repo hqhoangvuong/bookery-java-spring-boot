@@ -28,12 +28,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final DSLContext dslContext;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
         // Query user from the database
-        var userRecord = dslContext.selectFrom(Users.USERS)
+        var userRecord = dslContext
+                .selectFrom(Users.USERS)
                 .where(Users.USERS.USERNAME.eq(username))
                 .fetchOne();
 
@@ -48,7 +50,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         var userRole = userRecord.getIsAdmin() == 1 ? "ADMIN" : "USER";
 
-        UserDetails userDetails = User.builder()
+        UserDetails userDetails = User
+                .builder()
                 .username(userRecord.getUsername())
                 .password(userRecord.getPassword())
                 .roles(userRole)
@@ -56,10 +59,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // Return authenticated token
         return new UsernamePasswordAuthenticationToken(
-            userDetails,
-            null,
-            userDetails.getAuthorities()
-        );
+                userDetails,
+                null,
+                userDetails.getAuthorities());
     }
 
     @Override

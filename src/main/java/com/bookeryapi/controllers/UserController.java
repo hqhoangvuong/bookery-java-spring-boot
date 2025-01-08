@@ -1,6 +1,7 @@
 package com.bookeryapi.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bookeryapi.dto.UserDto;
 import com.bookeryapi.dto.UserPasswordChangeRequestDto;
@@ -11,13 +12,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+import java.io.InputStream;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -49,21 +53,42 @@ public class UserController {
         }
     }
 
-    @GetMapping("/all")
-    public String getMethodName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @PostMapping("/avatar")
+    public ResponseEntity<String> uploadAvatar(
+            HttpServletRequest request,
+            @RequestParam("file") MultipartFile file) {
 
-        if (authentication != null) {
-            System.out.println("Authentication: " + authentication);
-
-            Object authorities = authentication.getAuthorities();
+        String username = authService.getUsernameFromRequest(request);
+        try (InputStream inputStream = file.getInputStream()) {
+            userService.updateUserAvatar(username, inputStream);
+            return ResponseEntity.ok("Avatar image updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload image.");
         }
-        return "No user authenticated";
+    }
+
+    @GetMapping("/avatar")
+    public ResponseEntity<byte[]> getAvatar(HttpServletRequest request) {
+        String username = authService.getUsernameFromRequest(request);
+
+        try {
+            byte[] imageData = userService.getUserAvatarImage(username);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageData);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin")
-    public String adminAccess() {
-        return "This is an admin-only endpoint.";
+    @GetMapping("/all")
+    public List<UserDto> GetAllUsers() {
+        return userService.getAllUsers();
     }
 }
